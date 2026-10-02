@@ -181,6 +181,7 @@
 
 	rtl8367s {
 		compatible = "realtek,rtl8367s", "realtek,rtl8367c", "realtek,rtl8367b";
+		status = "okay";
 		cpu_port = <7>;
 		realtek,extif2 = <1 0 1 1 1 1 1 1 2>;
 		pinctrl-names = "default";
@@ -198,6 +199,56 @@
 				phy-mode = "rgmii";
 			};
 		};
+
+		/*
+		 * RTL8367S 为 5 口千兆交换芯片：
+		 *   port0        -> WAN 口
+		 *   port1~port4  -> 4 个 LAN 口
+		 *   port7(EXT2)  -> RGMII 连接 SoC 的 gmac1（CPU 口）
+		 */
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+				label = "wan";
+			};
+
+			port@1 {
+				reg = <1>;
+				label = "lan1";
+			};
+
+			port@2 {
+				reg = <2>;
+				label = "lan2";
+			};
+
+			port@3 {
+				reg = <3>;
+				label = "lan3";
+			};
+
+			port@4 {
+				reg = <4>;
+				label = "lan4";
+			};
+
+			/* CPU 口 */
+			port@7 {
+				reg = <7>;
+				label = "cpu";
+				ethernet = <&gmac1>;
+				phy-mode = "rgmii";
+
+				fixed-link {
+					speed = <1000>;
+					full-duplex;
+					pause;
+				};
+			};
+		};
 	};
 
 	hdmi_sound: hdmi-sound {
@@ -205,7 +256,7 @@
 		simple-audio-card,format = "i2s";
 		simple-audio-card,mclk-fs = <128>;
 		simple-audio-card,name = "rockchip,hdmi";
-		status = "disabled";
+		status = "okay";
 
 		simple-audio-card,cpu {
 				sound-dai = <&i2s0_8ch>;
@@ -297,11 +348,11 @@
 &hdmi {
 	avdd-0v9-supply = <&vdda0v9_image>;
 	avdd-1v8-supply = <&vcca1v8_pmu>;
-	status = "disabled";
+	status = "okay";
 };
 
 &hdmi_in_vp0 {
-	status = "disabled";
+	status = "okay";
 };
 
 &hdmi_in_vp1 {
@@ -309,11 +360,11 @@
 };
 
 &hdmi_sound {
-	status = "disabled";
+	status = "okay";
 };
 
 &route_hdmi {
-	status = "disabled";
+	status = "okay";
 	connect = <&vp0_out_hdmi>;
 };
 
@@ -767,7 +818,7 @@
 };
 
 &vop {
-	status = "disabled";
+	status = "okay";
 	assigned-clocks = <&cru DCLK_VOP0>, <&cru DCLK_VOP1>;
 	assigned-clock-parents = <&pmucru PLL_HPLL>, <&cru PLL_VPLL>;
 	support-multi-area;
@@ -845,4 +896,7 @@
 	};
 };
 
-#include "../rockchip-drm-vvop.dtsi"
+/*
+ * 需要真实 HDMI 输出，故不再包含 rockchip-drm-vvop.dtsi
+ * （该文件会启用虚拟 VOP 并强制关闭 &vop / &vop_mmu）。
+ */
