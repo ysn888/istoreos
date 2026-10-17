@@ -12,7 +12,7 @@
 #include "rk3568.dtsi"
 
 / {
-	model = "Linkfog ALA2";
+	model = "Aigo S30";
 	compatible = "linkfog,ala2", "rockchip,rk3568";
 
 	chosen: chosen {
