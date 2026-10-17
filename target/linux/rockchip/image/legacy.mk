@@ -327,3 +327,13 @@ $(call Device/Legacy/rk3588,$(1))
   DEVICE_PACKAGES += kmod-r8169 kmod-nvme kmod-ata-ahci-dwc kmod-hwmon-pwmfan kmod-thermal 
 endef
 TARGET_DEVICES += cyber_cyber3588-aib
+
+define Device/linkfog_ala2
+$(call Device/Legacy/rk3568,$(1))
+  DEVICE_VENDOR := Linkfog
+  DEVICE_MODEL := ALA2
+  DEVICE_DTS := rk3568/rk3568-ala2
+  SUPPORTED_DEVICES += linkfog,ala2
+  DEVICE_PACKAGES += kmod-nvme kmod-ata-ahci-dwc kmod-hwmon-pwmfan kmod-thermal kmod-switch-rtl8367b swconfig
+endef
+TARGET_DEVICES += linkfog_ala2
